@@ -4,11 +4,9 @@ import ShaderManager from "../../managers/ShaderManager";
 import UniformBlock from "../../managers/UniformBlock";
 import Color from "../../math/color";
 import Vector2 from "../../math/Vector2";
-import MaterialManager from "../mesh/MaterialManager";
 import Shader from "../shaders/Shader";
 
 export default class Material extends Entity {
-
 
     public shader: Shader;
     public uniformBlock: UniformBlock = new UniformBlock();
@@ -40,13 +38,11 @@ export default class Material extends Entity {
            this.uniformBlock.setVec3("color", value.toF32Array());
         }
     }
-    
 
     constructor(name = "", shader?: Shader) {
         super();
         this.name = name;
         this.shader = shader ?? ShaderManager.getShader("3d");
-
 
         this.uniformBlock.defineVec3("color", new Float32Array(this._color.rgb));
         this.uniformBlock.defineFloat("alpha", 1.0);
@@ -60,8 +56,5 @@ export default class Material extends Entity {
     apply() {
         
       
-    }
-    update() {
-        
     }
 }

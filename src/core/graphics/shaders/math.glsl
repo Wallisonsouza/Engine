@@ -61,16 +61,11 @@ mat4 createCompose(vec3 t,vec4 r, vec3 s) {
 }
 
 vec3 fog(vec3 fragPos, vec3 cameraPosition, float fogDensity, vec3 fogColor, vec3 objectColor) {
-    // Calcula a distância entre o fragmento e a câmera
-    float distance = length(fragPos - cameraPosition);
 
-    // Calcula o fator de névoa usando a densidade e a distância ao quadrado
+    float distance = length(fragPos - cameraPosition);
     float fogFactor = 1.0 - exp(-fogDensity * distance * distance);
 
-    // Limita o fator de névoa entre 0 e 1
     fogFactor = clamp(fogFactor, 0.0, 1.0); 
-
-    // Cor final do fragmento
     vec3 finalColor = mix(objectColor, fogColor, fogFactor);
 
     return finalColor;

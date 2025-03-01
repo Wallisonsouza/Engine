@@ -1,7 +1,5 @@
-import Camera from "../components/Camera";
 import Display from "../components/Display";
 import { BufferTarget, BufferUsage } from "../enum/Buffer";
-import PBRMaterial from "../graphics/material/PBRMaterial";
 import Mesh from "../graphics/mesh/Mesh";
 import Mathf from "../math/Mathf";
 import Vector2 from "../math/Vector2";
@@ -16,12 +14,6 @@ export interface BufferData {
     target: BufferTarget;
     size: number;
 }
-
-
-
-
-
-
 
 export interface ObjectBuffer {
     id: number;
@@ -81,7 +73,6 @@ export default class BufferHelper {
         this.uniformsBuffer.set(id, buffer);
         return buffer;
     }
-
 
     public static createObjectBuffer(objectBuffer: ObjectBuffer): WebGLVertexArrayObject | null {
         const gl2 = Display.webGl;
@@ -201,17 +192,6 @@ export default class BufferHelper {
     
         BufferHelper.createObjectBuffer(objectBuffer);
     }
-
-    public static createCameraBuffer(camera: Camera) {
-        const blockConfig: UniformBufferConfig = {
-            size: 128, 
-            usage: BufferUsage.DYNAMIC_DRAW,
-            target: BufferTarget.UNIFORM_BUFFER
-        };
-    
-        this.createUniformBuffer(camera.id, blockConfig);
-        BufferHelper.updateCameraBuffer(camera);
-    }
     
     private static bufferCache: Map<number, WebGLVertexArrayObject | null> = new Map();
     private static uniformsBuffer: Map<number, WebGLBuffer> = new Map();
@@ -240,36 +220,4 @@ export default class BufferHelper {
 
         gl.bindBuffer(uniformObjectBuffer.target, null);
     }
-    public static updateCameraBuffer(camera: Camera) {
-        let viewBuffer: UniformBufferData | null = null;
-        let projectioBuffer: UniformBufferData | null = null;
-        
-        if(camera.viewMatrix) {
-            viewBuffer =  {
-                data: camera.viewMatrix.getData(),
-                offset: 0
-            }
-    
-        }
-
-        if(camera.projectionMatrix) {
-            projectioBuffer =  {
-                data: camera.projectionMatrix.getData(),
-                offset: 64
-            } 
-        }
-
-        const ubo: UniformBufferObject = {
-            id: camera.id,
-            target: BufferTarget.UNIFORM_BUFFER,
-            uniformsData: [
-                viewBuffer,
-                projectioBuffer
-            ]
-        }
-
-        this.updateUniformBuffer(ubo);
-    }
-
-
 }

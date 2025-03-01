@@ -1,6 +1,7 @@
 import LifeCycleEvents from "./CallbackManager";
 import CollisionData from "./collision/CollisionData";
 import Entity from "./Entity";
+
 export default class LifeCycle extends Entity {
     onLoad?(): Promise<void>;
     onAwake?(): void;

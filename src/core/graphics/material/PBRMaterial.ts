@@ -7,9 +7,6 @@ import Camera from "../../components/Camera";
 import Light from "../../components/light/Light";
 import worldSettings from "../../../worldSettings/WorldSettings";
 import { TextureType } from "../../enum/TextureType";
-import LUT from "../../../LUT";
-import Engine from "../../engine";
-import Display from "../../components/Display";
 import DirecionalLight from "../../components/light/DirecionalLight";
 import AmbientLight from "../../components/light/AmbientLight";
 import BufferHelper from "../../managers/BufferHelper";
@@ -31,14 +28,16 @@ export default class PBRMaterial extends Material {
     public get metallic() {
         return this._metallic;
     }
+
     public get roughness() {
         return this._roughness;
     }
+
     public get ior() {
         return this._ior;
     }
+
     public get emissive() {
-        
         return this._emissive;
     }
 
@@ -81,52 +80,29 @@ export default class PBRMaterial extends Material {
         this.uniformBlock.createBuffer(this.id);
 
         
-        this.start();
-        const lut = new LUT(Engine.gl);
-        lut.generateBRDFLUT(this._roughness);
-        const texture = new Texture(" ");
-        texture.setGlTexture(lut.brdfLUTTexture);
-        Display.applyResolution();
-        this.lutTexture = texture;
-      
+        // this.start();
+        // const lut = new LUT(Engine.gl);
+        // lut.generateBRDFLUT(this._roughness);
+        // const texture = new Texture(" ");
+        // texture.setGlTexture(lut.brdfLUTTexture);
+        // Display.applyResolution();
+        // this.lutTexture = texture;
+     
 
     }
 
     flag = 0;
 
-    public start() {
+    // public start() {
 
-        if(!this.shader) {return};
-        this.shader.setGlobalUniforms = () => {
-            if(!this.shader) {return};
-            this.shader.use();
-            const camera = Camera.main;
-            this.shader.setVec3("u_viewPosition", camera.transform.position);
-            this.applyLight();
-            this.shader.setInt("u_renderPass", worldSettings.renderPass);
+    //     if(!this.shader) {return};
 
-
-
-
-         
-
-            const buffer = BufferHelper.getUniformBuffer(camera.id);
-            BufferHelper.updateCameraBuffer(camera);
-            if(buffer) {
-                this.shader.setUniformBuffer(buffer, "CameraUniform", 0);
-            }
-
-
-           
-            
-            // this.shader.setMat4("u_view", camera.viewMatrix);
-            // this.shader.setMat4("u_projection", camera.projectionMatrix);
-
-            // this.flag |= TextureType.ENVIRONMENT;
-            // this.shader.setInt("u_textureFlags", this.flag);
-            // this.shader.setSampleCube("u_skyBox", WorldOptions.environmentTexture, 6);
-        };
-    }
+    //     this.shader.setGlobalUniforms = () => {
+    //         // this.flag |= TextureType.ENVIRONMENT;
+    //         // this.shader.setInt("u_textureFlags", this.flag);
+    //         // this.shader.setSampleCube("u_skyBox", WorldOptions.environmentTexture, 6);
+    //     };
+    // }
 
     public setAmbientOcclusionTexture(imageUrl: string): void {
         LoadResources.loadTexture(imageUrl).then(texture => {
@@ -217,12 +193,17 @@ export default class PBRMaterial extends Material {
         this.shader.setInt("u_lightCount", lightCount);
     }
 
-    private applyMaterialProperties(): void {
-        const buffer = BufferHelper.getUniformBuffer(this.id);
-        if(buffer) {
-            this.shader.setUniformBuffer(buffer, "MaterialUniform", 1);
+    private applyBuffers(): void {
+
+        const materialBuffer = BufferHelper.getUniformBuffer(this.id);
+        if(materialBuffer) {
+            this.shader.setUniformBuffer(materialBuffer, "MaterialUniform", 1);
         }
-        this.shader.setVec3("u_emissiveFactor", this._emissive);
+
+        const cameraBuffer = BufferHelper.getUniformBuffer(Camera.main.id);
+        if(cameraBuffer) {
+            this.shader.setUniformBuffer(cameraBuffer, "CameraUniform", 0);
+        }
     }
     
     public apply(): void {
@@ -230,7 +211,11 @@ export default class PBRMaterial extends Material {
         if(!this.shader) return;
         this.shader.use();
         this.applyTextures();
-        this.applyMaterialProperties();
+        this.applyBuffers();
+        this.applyLight();
+        this.shader.setInt("u_renderPass", worldSettings.renderPass);
+
+      
     }
 
 }

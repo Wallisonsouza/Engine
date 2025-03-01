@@ -1,5 +1,9 @@
 #version 300 es
-precision mediump float;
+precision lowp float;
+precision lowp sampler2D;
+precision lowp sampler2DArray;
+
+uniform sampler2DArray textures;
 
 const float EPSILON = 1e-6f;
 const float PI = 3.1415926535897932384626433832795;
@@ -22,15 +26,17 @@ const int AO = 4;
 
 uniform int u_lightCount;
 uniform int u_renderPass;
-uniform vec3 u_viewPosition;
 
 struct PassData {
-    vec3 fragment;
+    vec3 localSpace; 
+    vec3 worldSpace; 
+    vec3 cameraSpace; 
+    vec3 screenSpace; 
     vec2 uv;
     vec3 tangent;
     vec3 bitangent;
     vec3 normal;
-    mat4 projection;
+    vec3 cameraPosition;
 };
 
 struct Light {
@@ -443,7 +449,7 @@ vec3 fresnel(float cosTheta, vec3 F0) {
 
 void combinedPass() {
     float ior = u_ior;
-    camera.viewDirection = normalize(u_viewPosition - pass.fragment);
+    camera.viewDirection = normalize(pass.cameraPosition - pass.worldSpace);
 
     vec3 a = vec3(0);
      vec3 direcionalColor = vec3(0);
@@ -494,6 +500,8 @@ void combinedPass() {
    
 }
 
+
+
 void main() {
  
     processData(
@@ -520,15 +528,10 @@ void main() {
 
     switch(u_renderPass) {
         case COMBINED:
-
-
-      // 1. Calcular o BRDF e adicionar o Specular
-        vec3 linearColor = material.brdf;  // Manter tudo linear
-        vec3 tonemappedColor = reinhardTonemap(linearColor);         // Tonemapping no espaço linear
-        vec3 srgbColor = linear_rgb_to_srgb(tonemappedColor); // Converter para sRGB no final
-        FragColor = vec4(srgbColor, material.alpha);
-
-
+            vec3 linearColor = material.brdf;
+            vec3 tonemappedColor = reinhardTonemap(linearColor);
+            vec3 srgbColor = linear_rgb_to_srgb(tonemappedColor); 
+            FragColor = vec4(srgbColor, material.alpha);
             break;
          
 

@@ -8,7 +8,7 @@ export default class Component extends LifeCycle {
     public isActive: boolean = true;
    
     public isSelected = false;
-    private _gameObject: GameObject | null = null;
+    protected _gameObject: GameObject | null = null;
 
     public get gameObject(): GameObject {
         if(!this._gameObject) {

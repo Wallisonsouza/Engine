@@ -71,7 +71,7 @@ export default class GameObjectBuilder {
 
     public static createSunLight(): GameObject {
         const lightGameObject = new GameObject();
-        lightGameObject.transform.rotation =  Quaternion.fromEulerAnglesVector3(new Vector3(90, 0, 0)); 
+        lightGameObject.transform.rotation =  Quaternion.fromEulerAnglesVector3(new Vector3(45, 45, 0)); 
         lightGameObject.transform.position = new Vector3(0, 5, 0);
         const lightComponent = new DirecionalLight();
         lightComponent.setGameObject(lightGameObject);

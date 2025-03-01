@@ -8,6 +8,7 @@ import Scrypt from "../../src/core/components/Scrypt";
 import LoadResources from "../../src/core/managers/LoadResources";
 import SceneManager from "../../src/core/managers/SceneManager";
 import Color from "../../src/core/math/color";
+import Vector3 from "../../src/core/math/Vector3";
 
 export default class SimpleScene extends Scrypt {
         
@@ -17,12 +18,15 @@ export default class SimpleScene extends Scrypt {
         camera.addComponent(CameraControler);
 
         const cube = GameObjectBuilder.createCube();
-    
+
+        const color = new Color(0.051, 0.051, 0.051);
+
         const sunLight = GameObjectBuilder.createSunLight();
-        const ambientLight = GameObjectBuilder.createAmbientLight(new Color(0.051, 0.051, 0.051));
+        const ambientLight = GameObjectBuilder.createAmbientLight(color);
+
         const cam = camera.getComponentByType<Camera>(Camera.TYPE);
         if(cam) {
-            cam.clearColor = new Color(0.051, 0.051, 0.051).toSRGB();
+            cam.clearColor = color.toSRGB();
         }
     
         SceneManager.addGameObjects([
@@ -45,5 +49,4 @@ export default class SimpleScene extends Scrypt {
             );
         });
     }
-
 }

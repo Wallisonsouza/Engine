@@ -36,11 +36,6 @@ export default class GameObject extends Entity {
             throw new ComponentAlreadyExistsException(`O componente "${componentInstance.type}" ja existe no objeto`);
         }
 
-        if(componentInstance instanceof Camera)  {
-            BufferHelper.createCameraBuffer(componentInstance);
-        }
-
-
         this._components.addObject(
             componentInstance.id,
             componentInstance,
@@ -76,7 +71,6 @@ export default class GameObject extends Entity {
         super.destroy();
         this.activeSelf = false;
         this.activeInHierarchy = false;
-        SceneManager.getCurrentScene()
         console.log(`GameObject "${this.name}" destruído com sucesso.`);
     }
 }

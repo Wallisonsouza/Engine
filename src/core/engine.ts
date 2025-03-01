@@ -6,7 +6,6 @@ import RendererManager from "./components/RenderManager";
 import { loadDependencies } from "./EngineDependences";
 import Input from "./input/Input";
 import SceneManager from "./managers/SceneManager";
-import ShaderManager from "./managers/ShaderManager";
 import Time from "./Time";
 
 export default class Engine {
@@ -40,29 +39,24 @@ export default class Engine {
     }
 
     private update(): void {
-
      
         const gl = Engine.gl;
         const camera = Camera.main;
         camera.aspectRatio = Display.getAspectRatio();
-
-        const shaders = ShaderManager.getAllShaders();
-        for(const shader of shaders) {
-            if(shader.setGlobalUniforms) {
-                shader.setGlobalUniforms();
-            }
-        }
-
+      
+        camera.uniformBlock.setMat4("camera_view", camera.viewMatrix.getData());
+        camera.uniformBlock.setMat4("camera_projection", camera.projectionMatrix.getData());
+        camera.uniformBlock.setVec3("camera_position", camera.transform.position.toFloat32Array());
+     
         const [r, g, b, a] = camera.clearColor.rgba;
         gl.clearColor(r, g, b, a);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        
-
         const gameObjects = SceneManager.getAllGameObjects();
         RendererManager.collectRenderers(gameObjects);
         LifeCycleEvents.emit("render", gl, camera);
         LifeCycleEvents.emit("update");
         Input.clearInputs();
+      
     }
 
 
@@ -71,6 +65,7 @@ export default class Engine {
     }
 
     public start() {
+        Display.applyResolution();
         LifeCycleEvents.emit("start");
         Display.traceErrors = false;
         SceneManager.getCurrentScene();

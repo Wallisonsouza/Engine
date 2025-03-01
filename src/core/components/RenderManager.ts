@@ -48,7 +48,6 @@ export default class RendererManager {
     private static renderOpaqueObjects(gl: WebGL2RenderingContext, camera: Camera): void {
         for (const [material, renderers] of this.opaqueObjects) {
             
-            material.update();
             material.apply();
             for (const renderer of renderers) {
                 renderer.render(gl, camera);
@@ -64,7 +63,6 @@ export default class RendererManager {
                 return distB - distA;
             });
 
-            material.update();
             material.apply();
             for (const renderer of renderers) {
                 renderer.render(gl, camera);

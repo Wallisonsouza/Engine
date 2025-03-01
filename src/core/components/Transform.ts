@@ -210,27 +210,26 @@ export default class Transform extends Component {
         const inverseModel = this.modelMatrix.inverse();
         return inverseModel.multiplyVec3(point);
     }
-    
 
-    public onDrawGizmos(): void {
-        const camera = Camera.main;
-        let distance = this.transform.position.distanceTo(camera.transform.position);
-        distance = Mathf.clamp(distance, 0.1, Infinity);
-        const scale = distance * 0.2;
+    // public onDrawGizmos(): void {
+    //     const camera = Camera.main;
+    //     let distance = this.transform.position.distanceTo(camera.transform.position);
+    //     distance = Mathf.clamp(distance, 0.1, Infinity);
+    //     const scale = distance * 0.2;
 
-        const globalXAxis = this.transform.right.multiplyScalar(scale);
-        const globalYAxis = this.transform.up.multiplyScalar(scale);
-        const globalZAxis = this.transform.forward.multiplyScalar(scale);
+    //     const globalXAxis = this.transform.right.multiplyScalar(scale);
+    //     const globalYAxis = this.transform.up.multiplyScalar(scale);
+    //     const globalZAxis = this.transform.forward.multiplyScalar(scale);
 
-        const xEnd = this.transform.position.add(globalXAxis);
-        const yEnd = this.transform.position.add(globalYAxis);
-        const zEnd = this.transform.position.add(globalZAxis);
+    //     const xEnd = this.transform.position.add(globalXAxis);
+    //     const yEnd = this.transform.position.add(globalYAxis);
+    //     const zEnd = this.transform.position.add(globalZAxis);
 
-        Gizmos.color = Color.RED;
-        Gizmos.drawLine(this.transform.position, xEnd);
-        Gizmos.color = Color.GREEN;
-        Gizmos.drawLine(this.transform.position, yEnd);
-        Gizmos.color = Color.BLUE;
-        Gizmos.drawLine(this.transform.position, zEnd);
-    }
+    //     Gizmos.color = Color.RED;
+    //     Gizmos.drawLine(this.transform.position, xEnd);
+    //     Gizmos.color = Color.GREEN;
+    //     Gizmos.drawLine(this.transform.position, yEnd);
+    //     Gizmos.color = Color.BLUE;
+    //     Gizmos.drawLine(this.transform.position, zEnd);
+    // }
 }

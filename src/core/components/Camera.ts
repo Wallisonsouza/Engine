@@ -7,8 +7,9 @@ import Vector3 from "../math/Vector3";
 import Vector4 from "../math/Vector4";
 import Display from "./Display";
 import SceneManager from "../managers/SceneManager";
-import { BufferManager } from "../managers/BufferManager";
-import BufferHelper from "../managers/BufferHelper";
+import UniformBlock from "../managers/UniformBlock";
+import GameObject from "./GameObject";
+
 
 export default class Camera extends Component {
 
@@ -20,6 +21,7 @@ export default class Camera extends Component {
     private _farPlane: number;
     private _depth: boolean;
     private _clearColor: Color;
+    public uniformBlock: UniformBlock = new UniformBlock();
 
     private cachedProjectionMatrix: Matrix4x4 | null = null;
 
@@ -27,6 +29,7 @@ export default class Camera extends Component {
     private clearProjectionCache() {
         this.cachedProjectionMatrix = null;
         this.projectionChanged = true;
+        
     }
 
     public get viewChanged() {
@@ -101,7 +104,6 @@ export default class Camera extends Component {
 
     public unproject(ndc: Vector3, depth: number): Vector3 {
         
-        console.log(depth)
         const ndcPos = new Vector4(ndc.x, ndc.y, 0.98, 1);
         return this.viewProjectionMatrix.inverse().multiplyVec4(ndcPos).perspectiveDivide();
     }
@@ -123,10 +125,20 @@ export default class Camera extends Component {
             throw new NullReferenceException("[Camera]", "Componente de câmera não encontrado no objeto da câmera principal.");
         }
 
+     
         return cameraComponent;
     }
 
+
+    public setGameObject(gameObject: GameObject): void {
+        this._gameObject = gameObject;
+        this.uniformBlock.defineMat4("camera_view", this.viewMatrix.getData());
+        this.uniformBlock.defineMat4("camera_projection", this.projectionMatrix.getData());
+        this.uniformBlock.defineVec3("camera_position", this.transform.position.toFloat32Array());
+        this.uniformBlock.createBuffer(this.id);
+    }
     constructor() {
+
         super("Camera", "Camera");
         this._clearColor = Color.CHARCOAL;
         this._fieldOfView = 60;
@@ -151,7 +163,11 @@ export default class Camera extends Component {
     }
 
     public get viewMatrix() {
-        return this.transform.modelMatrix.inverse();
+
+        const view = this.transform.modelMatrix.inverse();
+       
+     
+        return view;
     }
 
     public get viewProjectionMatrix(): Matrix4x4 {

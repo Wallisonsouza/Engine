@@ -55,7 +55,7 @@ export default class UniformBlock {
 
         BufferHelper.createUniformBuffer(identifier, config);
 
-        for (const [key, property] of this.properties) {
+        for (const [_, property] of this.properties) {
             if (this.id && property) {
                 const object: UniformBufferObject = {
                     id: this.id,
@@ -97,6 +97,9 @@ export default class UniformBlock {
     }
 
     public setVec3(name: string, value: Float32Array) {
+        this.updatePropertyBuffer(name, value);
+    }
+    public setMat4(name: string, value: Float32Array) {
         this.updatePropertyBuffer(name, value);
     }
 }
