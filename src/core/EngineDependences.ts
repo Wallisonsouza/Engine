@@ -10,8 +10,6 @@ import ShaderManager from "./managers/ShaderManager";
 export async function loadDependencies() {
 
 
-
-
     await Promise.all([
         ShaderManager.createShader(
             "src/core/graphics/shaders/3d/StandardShader.vert",

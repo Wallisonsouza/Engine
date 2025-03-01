@@ -33,7 +33,7 @@ export default class SimpleScene extends Scrypt {
             ]
         );
 
-        LoadResources.loadGLB("assets/3d/lamborghini_diablo_sv.glb").then((data) => {
+        LoadResources.loadGLB("assets/3d/car.glb").then((data) => {
             const gltf = GLBParser.toGLTF(data);
             const parsedGflt = GLTFParser.parse(gltf);
             
